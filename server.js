@@ -5,15 +5,10 @@ const { JSDOM } = require('jsdom');
 const puppeteer = require('puppeteer');
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-
-(async () => {
-    // Ensure Chrome binaries are installed
-    await puppeteer.launch();
-})();
 
 app.get('/fetch-data', async (req, res) => {
     const { nid, dob } = req.query;
@@ -40,7 +35,7 @@ app.get('/fetch-data', async (req, res) => {
         const modifiedHtmlContent = dom.serialize();
 
         // Generate PDF from the HTML content using Puppeteer
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}); // Add necessary args for deployment environments
         const page = await browser.newPage();
         await page.setContent(modifiedHtmlContent, { waitUntil: 'networkidle0' });
         const pdfBuffer = await page.pdf({ format: 'A4' });
