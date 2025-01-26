@@ -2,7 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const { JSDOM } = require('jsdom');
-const pdf = require('html-pdf');
+const puppeteer = require('puppeteer');
 
 const app = express();
 const port = 3001;
@@ -34,16 +34,17 @@ app.get('/fetch-data', async (req, res) => {
         // Convert the modified HTML content to a string
         const modifiedHtmlContent = dom.serialize();
 
-        // Generate PDF from the HTML content
-        pdf.create(modifiedHtmlContent).toBuffer((err, buffer) => {
-            if (err) {
-                console.error('Error generating PDF:', err);
-                return res.status(500).send('Error generating PDF');
-            }
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'attachment; filename=data.pdf');
-            res.send(buffer);
-        });
+        // Generate PDF from the HTML content using Puppeteer
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+        await page.setContent(modifiedHtmlContent, { waitUntil: 'networkidle0' });
+        const pdfBuffer = await page.pdf({ format: 'A4' });
+
+        await browser.close();
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename=data.pdf');
+        res.send(pdfBuffer);
     } catch (error) {
         console.error('Error fetching data:', error);
         res.status(500).send('Error fetching data');
