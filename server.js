@@ -10,6 +10,11 @@ const port = 3001;
 app.use(cors());
 app.use(express.json());
 
+(async () => {
+    // Ensure Chrome binaries are installed
+    await puppeteer.launch();
+})();
+
 app.get('/fetch-data', async (req, res) => {
     const { nid, dob } = req.query;
     const key = 'allteam'; // Since the key is constant, you can set it directly
