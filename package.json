@@ -1,13 +1,17 @@
 {
+  "name": "server-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "postinstall": "puppeteer install"
+    "postinstall": "node install-puppeteer.js"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "jsdom": "^16.4.0",
-    "puppeteer": "^10.0.0" 
+    "puppeteer": "^19.0.0" 
   }
 }
