@@ -31,6 +31,7 @@ app.get('/fetch-data', async (req, res) => {
 
         res.send(dom.serialize());
     } catch (error) {
+        console.error('Error fetching data:', error);
         res.status(500).send('Error fetching data');
     }
 });
